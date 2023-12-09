@@ -1,8 +1,12 @@
 <script setup>
 import { Lock, User } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { userLoginService, userRegisterService } from '@/interface/user.js'
+import { ElMessage } from 'element-plus'
+import { userStore } from '@/stores/user.js'
+import { useRouter } from "vue-router";
 
-const isRegister = ref(true)
+const isRegister = ref(false)
 
 //登录表单
 const formModel = ref({
@@ -39,6 +43,37 @@ const rules = {
       trigger: 'blur'
     }
   ]
+}
+
+const form = ref()
+const register = async () => {
+  //进行校验
+  await form.value.validate()
+  await userRegisterService(formModel.value)
+  ElMessage.success('注册成功')
+  isRegister.value = false
+}
+
+//切换表单时，重置表单内容
+watch(isRegister, () => {
+  formModel.value = {
+    username: '',
+    password: '',
+    repassword: ''
+  }
+})
+const store = userStore()
+const router = useRouter()
+//登录前校验
+const login = async () => {
+  await form.value.validate()
+  const res = await userLoginService(formModel.value)
+  store.setToken(res.data.token)
+  ElMessage.success('登录成功')
+  //跳转到主界面
+  await router.push({
+    path: '/'
+  })
 }
 </script>
 
@@ -81,21 +116,28 @@ const rules = {
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button auto-insert-space class="button" type="primary"> 注册</el-button>
+          <el-button @click="register" auto-insert-space class="button" type="primary">
+            注册
+          </el-button>
         </el-form-item>
         <el-form-item class="flex">
           <el-link :underline="false" type="info" @click="isRegister = false"> ← 返回</el-link>
         </el-form-item>
       </el-form>
-      <el-form v-else ref="form" autocomplete="off" size="large">
+      <el-form :model="formModel" :rules="rules" v-else ref="form" autocomplete="off" size="large">
         <el-form-item>
           <h1>登录</h1>
         </el-form-item>
-        <el-form-item>
-          <el-input :prefix-icon="User" placeholder="请输入用户名"></el-input>
-        </el-form-item>
-        <el-form-item>
+        <el-form-item prop="username">
           <el-input
+            v-model="formModel.username"
+            :prefix-icon="User"
+            placeholder="请输入用户名"
+          ></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input
+            v-model="formModel.password"
             :prefix-icon="Lock"
             name="password"
             placeholder="请输入密码"
@@ -109,7 +151,7 @@ const rules = {
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button auto-insert-space class="button" type="primary">登录</el-button>
+          <el-button @click="login" auto-insert-space class="button" type="primary">登录</el-button>
         </el-form-item>
         <el-form-item class="flex">
           <el-link :underline="false" type="info" @click="isRegister = true"> 注册 →</el-link>
