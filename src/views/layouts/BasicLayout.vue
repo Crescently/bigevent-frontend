@@ -92,7 +92,7 @@ import avatar from '@/assets/default.png'
 import { userStore } from '@/stores/user.js'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessageBox } from "element-plus";
+import { ElMessageBox } from 'element-plus'
 
 const store = userStore()
 const router = useRouter()
@@ -116,7 +116,7 @@ const onCommand = async (key) => {
     })
   } else {
     //跳转到目标页
-    router.push({
+    await router.push({
       path: `/user/${key}`
     })
   }

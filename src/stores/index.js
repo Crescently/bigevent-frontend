@@ -1,5 +1,5 @@
 /**
- * 统一管理pinia文件
+ * 统一管理pinia 导出
  */
 import persist from 'pinia-plugin-persistedstate'
 import { createPinia } from 'pinia'

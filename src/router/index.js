@@ -7,6 +7,7 @@ const router = createRouter({
   routes: routes
 })
 
+//全局路由拦截
 router.beforeEach((to) => {
   const store = userStore()
   if (!store.token && to.path !== '/login') {
