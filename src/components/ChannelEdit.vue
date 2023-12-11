@@ -68,7 +68,7 @@ const onSubmit = async () => {
     ElMessage.success('添加成功')
   }
   dialogVisible.value = false
-  emit('success',isEdit)
+  emit('success', isEdit)
 }
 
 defineExpose({

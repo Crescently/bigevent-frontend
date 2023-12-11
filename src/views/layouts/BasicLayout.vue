@@ -52,7 +52,7 @@
     <el-container>
       <el-header>
         <div>
-          黑马程序员：<strong>{{ store.user.nickname || store.user.username }}</strong>
+          登录用户：<strong>{{ store.user.nickname || store.user.username }}</strong>
         </div>
         <el-dropdown placement="bottom-end" @command="onCommand">
           <span class="el-dropdown__box">
