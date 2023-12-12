@@ -1,5 +1,9 @@
 <template>
-  <el-select :modelValue="modelValue" @update:modelValue="emit('update:cid', $event)">
+  <el-select
+    :style="{ width }"
+    :modelValue="modelValue"
+    @update:modelValue="emit('update:modelValue', $event)"
+  >
     <el-option
       v-for="item in channelList"
       :label="item.cate_name"
@@ -16,6 +20,9 @@ import { ref } from 'vue'
 defineProps({
   modelValue: {
     type: [Number, String]
+  },
+  width: {
+    type: String
   }
 })
 

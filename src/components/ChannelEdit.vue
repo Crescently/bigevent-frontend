@@ -59,7 +59,7 @@ const open = async (row) => {
 const emit = defineEmits(['success'])
 const onSubmit = async () => {
   await formRef.value.validate()
-  const isEdit = formModel.value.id
+  const isEdit = formModel.value?.id
   if (isEdit) {
     await artEditChannelService(formModel.value)
     ElMessage.success('编辑成功')

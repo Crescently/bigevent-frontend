@@ -1,7 +1,7 @@
 <template>
   <page-container title="文章管理">
     <template #extra>
-      <el-button type="primary">添加文章</el-button>
+      <el-button type="primary" @click="addArticle">添加文章</el-button>
     </template>
     <el-form inline>
       <el-form-item label="文章分类：">
@@ -65,6 +65,7 @@
       @current-change="onCurrentChange"
       style="margin-top: 20px; justify-content: flex-end"
     />
+    <article-edit ref="article" @success="onSuccess" />
   </page-container>
 </template>
 
@@ -73,12 +74,14 @@ import PageContainer from '@/components/PageContainer.vue'
 import { onMounted, ref } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import ChannelSelect from '@/components/ChannelSelect.vue'
-import { artGetListService } from '@/interface/article.js'
+import { artDelService, artGetListService } from '@/interface/article.js'
 import { formatTime } from '@/utils/timeformat.js'
+import ArticleEdit from '@/components/ArticleEdit.vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const articleList = ref([])
 const total = ref(0)
-
+const article = ref()
 const params = ref({
   pagenum: 1,
   pagesize: 5,
@@ -96,11 +99,22 @@ const getArticleList = async () => {
 onMounted(() => {
   getArticleList()
 })
-const onEditArticle = (row) => {
-  console.log(row)
+
+const addArticle = () => {
+  article.value.drawerOpen({})
 }
-const onDeleteArticle = (row) => {
-  console.log(row)
+const onEditArticle = (row) => {
+  article.value.drawerOpen(row)
+}
+const onDeleteArticle = async (row) => {
+  await ElMessageBox.confirm('你确认删除该文章信息吗？', '温馨提示', {
+    type: 'warning',
+    confirmButtonText: '确认',
+    cancelButtonText: '取消'
+  })
+  await artDelService(row.id)
+  ElMessage({ type: 'success', message: '删除成功' })
+  await getArticleList()
 }
 
 const onSizeChange = (size) => {
@@ -122,6 +136,16 @@ const onReset = () => {
   params.value.pagenum = 1
   params.value.cate_id = ''
   params.value.state = ''
+  getArticleList()
+}
+
+const onSuccess = (state) => {
+  if (state === 'add') {
+    //是添加，渲染最后一页
+    //更新成最大页码数
+    params.value.pagenum = Math.ceil((total.value + 1) / params.value.pagesize)
+  }
+  //是编辑，直接渲染当前页
   getArticleList()
 }
 </script>

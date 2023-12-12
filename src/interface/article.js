@@ -12,3 +12,10 @@ export const artDelChannelService = (id) => request.delete('/my/cate/del', { par
 
 //获取文章列表
 export const artGetListService = (params) => request.get('/my/article/list', { params })
+
+export const artPublishService = (data) => request.post('/my/article/add', data)
+
+export const artGetDetailService = (id) => request.get('my/article/info', { params: { id } })
+export const artEditService = (data) => request.put('my/article/info', data)
+
+export const artDelService = (id) => request.delete('my/article/info', { params: { id } })
