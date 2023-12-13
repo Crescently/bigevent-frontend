@@ -47,7 +47,6 @@ const dialog = ref()
 const getChannelList = async () => {
   loading.value = true
   const res = await artGetChannelsService()
-  console.log(res)
   channelList.value = res.data.data
   loading.value = false
   //收不到数据，自己编
