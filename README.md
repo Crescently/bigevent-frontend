@@ -1,35 +1,15 @@
-# vue3-practice
+# bigEvent-frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+## 项目背景
 
-## Recommended IDE Setup
+学习vue3语法时根据教程制作的一个小项目，主要练习vue3语法，vue3的setup语法糖，
+vue3的组合API，vue3的响应
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## 主要技术栈
 
-## Customize configuration
++ vue3
++ vue-router
++ pinia
++ axios
++ element-plus
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-pnpm dev
-```
-
-### Compile and Minify for Production
-
-```sh
-pnpm build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-pnpm lint
-```
