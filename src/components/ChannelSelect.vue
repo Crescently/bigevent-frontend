@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { artGetChannelsService } from '@/interface/article.js'
+import { artGetChannelsService } from '@/interface/category.js'
 import { ref } from 'vue'
 
 defineProps({

@@ -11,15 +11,18 @@
       <el-form-item label="文章标题" prop="title">
         <el-input v-model="formModel.title" placeholder="请输入标题"></el-input>
       </el-form-item>
-      <el-form-item label="文章分类" prop="cate_id">
-        <channel-select v-model="formModel.cate_id" width="100%"></channel-select>
+      <el-form-item label="文章分类" prop="categoryId">
+        <channel-select v-model="formModel.categoryId" width="100%"></channel-select>
       </el-form-item>
-      <el-form-item label="文章封面" prop="cover_img">
+      <el-form-item label="文章封面" prop="coverImg">
         <el-upload
           class="avatar-uploader"
-          :auto-upload="false"
+          :auto-upload="true"
           :show-file-list="false"
-          :on-change="onUploadFile"
+          action="http://localhost:8081/upload"
+          name="file"
+          :headers="{'Authorization':store.token}"
+          :on-success="uploadSuccess"
         >
           <img v-if="imgUrl" :src="imgUrl" class="avatar" alt="" />
           <el-icon v-else class="avatar-uploader-icon">
@@ -54,21 +57,22 @@ import { QuillEditor } from '@vueup/vue-quill'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import { artEditService, artGetDetailService, artPublishService } from '@/interface/article.js'
 import { ElMessage } from 'element-plus'
-import { baseURL } from '@/utils/request.js'
-import axios from 'axios'
+import { userStore } from '@/stores/user.js'
 
 const visibleDrawer = ref(false)
 
 const defaultForm = {
   title: '',
-  cate_id: '',
-  cover_img: '',
+  categoryId: '',
+  coverImg: '',
   content: '',
   state: ''
 }
 const formModel = ref({
   ...defaultForm
 })
+
+const store = userStore()
 
 const title = ref({})
 const drawerOpen = async (row) => {
@@ -77,10 +81,7 @@ const drawerOpen = async (row) => {
   if (row.id) {
     const res = await artGetDetailService(row.id)
     formModel.value = res.data.data
-    imgUrl.value = baseURL + formModel.value.cover_img
-    //提交后台时图片需要的格式是file
-    //将地址转换为file对象
-    formModel.value.cover_img = await imageUrlToFile(imgUrl.value, formModel.value.cover_img)
+    imgUrl.value = formModel.value.coverImg
   } else {
     formModel.value = { ...defaultForm }
     imgUrl.value = ''
@@ -90,30 +91,13 @@ const drawerOpen = async (row) => {
   }
 }
 
-// 将网络图片地址转换为File对象
-async function imageUrlToFile(url, fileName) {
-  try {
-    // 第一步：使用axios获取网络图片数据
-    const response = await axios.get(url, { responseType: 'arraybuffer' })
-    const imageData = response.data
-
-    // 第二步：将图片数据转换为Blob对象
-    const blob = new Blob([imageData], { type: response.headers['content-type'] })
-
-    // 第三步：创建一个新的File对象
-    return new File([blob], fileName, { type: blob.type })
-  } catch (error) {
-    console.error('将图片转换为File对象时发生错误:', error)
-    throw error
-  }
+const uploadSuccess = (result) => {
+  imgUrl.value = result.data
+  formModel.value.coverImg = result.data
 }
 
 const imgUrl = ref('')
 const editor = ref()
-const onUploadFile = (uploadFile) => {
-  imgUrl.value = URL.createObjectURL(uploadFile.raw)
-  formModel.value.cover_img = uploadFile.raw
-}
 
 const emit = defineEmits(['success'])
 const Publish = async (state) => {
@@ -129,7 +113,7 @@ const Publish = async (state) => {
     visibleDrawer.value = false
     emit('success', 'edit')
   } else {
-    await artPublishService(fd)
+    await artPublishService(formModel.value)
     ElMessage.success('添加成功')
     visibleDrawer.value = false
     //通知父组件添加成功

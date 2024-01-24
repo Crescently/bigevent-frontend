@@ -4,7 +4,7 @@ import { ref, watch } from 'vue'
 import { userLoginService, userRegisterService } from '@/interface/user.js'
 import { ElMessage } from 'element-plus'
 import { userStore } from '@/stores/user.js'
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router'
 
 const isRegister = ref(false)
 
@@ -68,7 +68,8 @@ const router = useRouter()
 const login = async () => {
   await form.value.validate()
   const res = await userLoginService(formModel.value)
-  store.setToken(res.data.token)
+  console.log(res)
+  store.setToken(res.data.data)
   ElMessage.success('登录成功')
   //跳转到主界面
   await router.push({
@@ -167,9 +168,8 @@ const login = async () => {
   background-color: #fff;
 
   .bg {
-    background:
-      url('@/assets/logo2.png') no-repeat 60% center / 240px auto,
-      url('@/assets/login_bg.jpg') no-repeat center / cover;
+    background: url('@/assets/logo2.png') no-repeat 60% center / 240px auto,
+    url('@/assets/login_bg.jpg') no-repeat center / cover;
     border-radius: 0 20px 20px 0;
   }
 

@@ -56,7 +56,7 @@
         </div>
         <el-dropdown placement="bottom-end" @command="onCommand">
           <span class="el-dropdown__box">
-            <el-avatar :src="store.user.user_pic || avatar" />
+            <el-avatar :src="store.user.userPic || avatar" />
             <el-icon><CaretBottom /></el-icon>
           </span>
           <template #dropdown>

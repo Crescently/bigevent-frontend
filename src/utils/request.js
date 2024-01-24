@@ -3,7 +3,9 @@ import axios from 'axios'
 import router from '@/router'
 import { ElMessage } from 'element-plus'
 
-const baseURL = 'http://big-event-vue-api-t.itheima.net'
+
+// 'http://big-event-vue-api-t.itheima.net'
+const baseURL = 'http://localhost:8081'
 
 const instance = axios.create({
   baseURL,
@@ -28,12 +30,12 @@ instance.interceptors.response.use(
     if (res.data.code === 0) {
       return res
     }
-    ElMessage({ message: res.data.message || '服务异常', type: 'error' })
+    ElMessage({ message: res.data.msg ? res.data.msg : '服务异常', type: 'error' })
     return Promise.reject(res.data)
   },
   (err) => {
     ElMessage({
-      message: err.response.data.message || '服务异常',
+      message: err.response.data.msg ? err.response.data.msg : '服务异常',
       type: 'error'
     })
     console.log(err)

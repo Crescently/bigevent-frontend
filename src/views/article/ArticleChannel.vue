@@ -5,8 +5,8 @@
     </template>
     <el-table :data="channelList" style="width: 100%" v-loading="loading">
       <el-table-column label="序号" width="100" type="index"></el-table-column>
-      <el-table-column label="分类名称" prop="cate_name"></el-table-column>
-      <el-table-column label="分类别名" prop="cate_alias"></el-table-column>
+      <el-table-column label="分类名称" prop="categoryName"></el-table-column>
+      <el-table-column label="分类别名" prop="categoryAlias"></el-table-column>
       <el-table-column label="操作" width="100">
         <template #default="{ row }">
           <el-button
@@ -36,7 +36,7 @@
 <script setup>
 import PageContainer from '@/components/PageContainer.vue'
 import { onMounted, ref } from 'vue'
-import { artDelChannelService, artGetChannelsService } from '@/interface/article.js'
+import { artDelChannelService, artGetChannelsService } from '@/interface/category.js'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import ChannelEdit from '@/components/ChannelEdit.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'

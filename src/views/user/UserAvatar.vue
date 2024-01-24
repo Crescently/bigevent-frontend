@@ -5,9 +5,12 @@
         <el-upload
           ref="uploadRef"
           class="avatar-uploader"
-          :auto-upload="false"
+          :auto-upload="true"
           :show-file-list="false"
-          :on-change="onUploadFile"
+          action="http://localhost:8081/upload"
+          name="file"
+          :headers="{'Authorization':store.token}"
+          :on-success="uploadSuccess"
         >
           <img v-if="imgUrl" :src="imgUrl" class="avatar" alt="" />
           <el-icon v-else class="avatar-uploader-icon">
@@ -41,20 +44,13 @@ import { userUploadAvatarService } from '@/interface/user.js'
 
 const store = userStore()
 
-const imgUrl = ref(store.user.user_pic)
+const imgUrl = ref(store.user.userPic)
 
 const uploadRef = ref()
-const onUploadFile = (file) => {
-  // imgUrl.value = URL.createObjectURL(file.raw)
 
-  //基于FileReader读取图片作预览
-  const reader = new FileReader()
-  reader.readAsDataURL(file.raw)
-  reader.onload = () => {
-    imgUrl.value = reader.result
-  }
+const uploadSuccess = (result) => {
+  imgUrl.value = result.data
 }
-
 const updateAvatar = async () => {
   await userUploadAvatarService(imgUrl.value)
   await store.getUser()

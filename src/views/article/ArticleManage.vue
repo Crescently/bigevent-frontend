@@ -5,7 +5,7 @@
     </template>
     <el-form inline>
       <el-form-item label="文章分类：">
-        <channel-select v-model="params.cate_id" />
+        <channel-select v-model="params.categoryId" />
       </el-form-item>
       <el-form-item label="发布状态：">
         <el-select v-model="params.state">
@@ -20,15 +20,15 @@
     </el-form>
 
     <el-table :data="articleList" v-loading="loading" style="width: 100%">
-      <el-table-column label="文章标题" width="400">
+      <el-table-column label="文章标题" prop="title" width="400">
         <template #default="{ row }">
           <el-link type="primary" :underline="false">{{ row.title }}</el-link>
         </template>
       </el-table-column>
-      <el-table-column label="分类" prop="cate_name"></el-table-column>
-      <el-table-column label="发表时间" prop="pub_date">
+      <el-table-column label="分类" prop="categoryId"></el-table-column>
+      <el-table-column label="发表时间" prop="createTime">
         <template #default="{ row }">
-          {{ formatTime(row.pub_time) }}
+          {{ formatTime(row.createTime) }}
         </template>
       </el-table-column>
       <el-table-column label="状态" prop="state"></el-table-column>
@@ -55,8 +55,8 @@
       </template>
     </el-table>
     <el-pagination
-      v-model:current-page="params.pagenum"
-      v-model:page-size="params.pagesize"
+      v-model:current-page="params.pageNum"
+      v-model:page-size="params.pageSize"
       :page-sizes="[2, 3, 4, 5, 10]"
       layout="jumper, total, sizes, prev, pager, next"
       background
@@ -75,24 +75,25 @@ import { onMounted, ref } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import ChannelSelect from '@/components/ChannelSelect.vue'
 import { artDelService, artGetListService } from '@/interface/article.js'
-import { formatTime } from '@/utils/timeformat.js'
 import ArticleEdit from '@/components/ArticleEdit.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { formatTime } from '@/utils/timeformat.js'
 
 const articleList = ref([])
 const total = ref(0)
 const article = ref()
+
 const params = ref({
-  pagenum: 1,
-  pagesize: 5,
-  cate_id: '',
-  state: ''
+  pageNum: 1,
+  pageSize: 5,
+  categoryId: null,
+  state: null
 })
 const loading = ref(false)
 const getArticleList = async () => {
   loading.value = true
   const res = await artGetListService(params.value)
-  articleList.value = res.data.data
+  articleList.value = res.data.data.items
   total.value = res.data.total
   loading.value = false
 }
@@ -118,33 +119,28 @@ const onDeleteArticle = async (row) => {
 }
 
 const onSizeChange = (size) => {
-  params.value.pagenum = 1
-  params.value.pagesize = size
+  params.value.pageNum = 1
+  params.value.pageSize = size
   getArticleList()
 }
 const onCurrentChange = (page) => {
-  params.value.pagenum = page
+  params.value.pageNum = page
   getArticleList()
 }
 
 const onSearch = () => {
-  params.value.pagenum = 1
+  params.value.pageNum = 1
   getArticleList()
 }
 
 const onReset = () => {
-  params.value.pagenum = 1
-  params.value.cate_id = ''
+  params.value.pageNum = 1
+  params.value.categoryId = ''
   params.value.state = ''
   getArticleList()
 }
 
-const onSuccess = (state) => {
-  if (state === 'add') {
-    //是添加，渲染最后一页
-    //更新成最大页码数
-    params.value.pagenum = Math.ceil((total.value + 1) / params.value.pagesize)
-  }
+const onSuccess = () => {
   //是编辑，直接渲染当前页
   getArticleList()
 }
